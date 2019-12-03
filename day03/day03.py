@@ -1,24 +1,14 @@
-from typing import List, DefaultDict
+from typing import List
 import collections
 
 
-def part1():
-    pass
-
-
-def part2():
-    pass
-
-
-def plot_path(path: List):
-
-    # We'll create a dictionary of the grid locations the path covers
+def plot_path_dist(path: List):
 
     # Empty list to start
     panel = []
 
-    # Start at (0,0)
-    pos_x, pos_y = 0, 0
+    # Start at (0,0) with distance 0
+    pos_x, pos_y, distance = 0, 0, 0
 
     # Look at every trace in the path
     for trace in path:
@@ -27,91 +17,48 @@ def plot_path(path: List):
         if trace[0] == "U":  # Up
             # Y value goes up
             panel.extend(
-                [(pos_x, y) for y in range(pos_y + 1, pos_y + trace[1] + 1)]
+                [
+                    (pos_x, y, distance + abs(y - pos_y))
+                    for y in range(pos_y + 1, pos_y + trace[1] + 1)
+                ]
             )
             pos_y += trace[1]
+            distance += trace[1]
 
         elif trace[0] == "D":  # Down
             # Y value does down
             panel.extend(
                 [
-                    (pos_x, y)
+                    (pos_x, y, distance + abs(y - pos_y))
                     for y in range(pos_y - 1, pos_y - trace[1] - 1, -1)
                 ]
             )
             pos_y -= trace[1]
+            distance += trace[1]
 
         elif trace[0] == "R":  # Right
             # X value goes up
             panel.extend(
-                [(x, pos_y) for x in range(pos_x + 1, pos_x + trace[1] + 1)]
+                [
+                    (x, pos_y, distance + abs(x - pos_x))
+                    for x in range(pos_x + 1, pos_x + trace[1] + 1)
+                ]
             )
             pos_x += trace[1]
+            distance += trace[1]
 
         elif trace[0] == "L":  # Left
             # X value does down
             panel.extend(
                 [
-                    (x, pos_y)
+                    (x, pos_y, distance + abs(x - pos_x))
                     for x in range(pos_x - 1, pos_x - trace[1] - 1, -1)
                 ]
             )
             pos_x -= trace[1]
+            distance += trace[1]
 
     return panel
-
-
-def find_intersections(panel: List, path: List):
-    # We do roughly the same thing as above, but we only create a list of intersections
-
-    # Empty list to start
-    intersections = []
-
-    # Start at (0,0)
-    pos_x, pos_y = 0, 0
-
-    # Look at every trace in the path
-    for trace in path:
-
-        # Which direction are we moving?
-        if trace[0] == "U":  # Up
-            # Y value goes up
-            trace_grid = [
-                (pos_x, y) for y in range(pos_y + 1, pos_y + trace[1] + 1)
-            ]
-
-            pos_y += trace[1]
-
-        elif trace[0] == "D":  # Down
-            # Y value does down
-            trace_grid = [
-                (pos_x, y) for y in range(pos_y - 1, pos_y - trace[1] - 1, -1)
-            ]
-
-            pos_y -= trace[1]
-
-        elif trace[0] == "R":  # Right
-            # X value goes up
-            trace_grid = [
-                (x, pos_y) for x in range(pos_x + 1, pos_x + trace[1] + 1)
-            ]
-
-            pos_x += trace[1]
-
-        elif trace[0] == "L":  # Left
-            # X value does down
-            trace_grid = [
-                (x, pos_y) for x in range(pos_x - 1, pos_x - trace[1] - 1, -1)
-            ]
-
-            pos_x -= trace[1]
-
-        # Track the intersections
-        for trace_location in trace_grid:
-            if trace_location in panel:
-                intersections.append(trace_location)
-
-    return intersections
 
 
 if __name__ == "__main__":
@@ -125,26 +72,38 @@ if __name__ == "__main__":
     print(f"Path 2, length {len(path2)}")
 
     # Plot both paths separately
-    panel1 = plot_path(path1)
-    # print(f"Panel 1, length {len(panel1)}")
-    panel2 = plot_path(path2)
-    # print(f"Panel 2, length {len(panel2)}")
+    panel1 = plot_path_dist(path1)
+    panel2 = plot_path_dist(path2)
+
+    # Normalize the paths in dictionaries
+    dict_panel1 = collections.defaultdict(list)
+    for location in panel1:
+        dict_panel1[location[0], location[1]].append(location[2])
+    dict_panel2 = collections.defaultdict(list)
+    for location in panel2:
+        dict_panel2[location[0], location[1]].append(location[2])
 
     # Create a dictionary to hold the intersections
     # Key is the tuple path, value is the path in that location
     intersections = collections.defaultdict(list)
-    for location in panel1:
-        intersections[location].append(1)
-    for location in panel2:
-        intersections[location].append(2)
+    for k, v in dict_panel1.items():
+        intersections[k].append(min(v))
+    for k, v in dict_panel2.items():
+        intersections[k].append(min(v))
 
     # Calculate a list of manhattan distances for every intersection
-    # Intersections are dictionary entries where the value is [1,2]
+    # Intersections are dictionary entries where the value has two entries
     manhattan = [
-        abs(x) + abs(y)
-        for (x, y) in intersections
-        if intersections[(x, y)] == [1, 2]
+        abs(k[0]) + abs(k[1]) for k, v in intersections.items() if len(v) == 2
     ]
 
     # Print the minimum distance
     print(f"Manhattan: {min(manhattan)}")
+
+    # Part 2
+
+    shortest = [
+        abs(v[0]) + abs(v[1]) for k, v in intersections.items() if len(v) == 2
+    ]
+
+    print(f"Shortest path: {min(shortest)}")
