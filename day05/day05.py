@@ -1,8 +1,10 @@
 from typing import List
 
 
-def opcode_00():
+# Something has gone horribly wrong, just end it all
+def opcode_00(memory: list, ip: int, modes: str):
     print("ERROR")
+    return len(memory)
 
 
 # Add two numbers
@@ -135,7 +137,8 @@ def opcode_07(memory: list, ip: int, modes: str):
     else:
         memory[ip + 3] = int(param1 < param2)
 
-    return ip+4
+    return ip + 4
+
 
 # Equals
 def opcode_08(memory: list, ip: int, modes: str):
@@ -156,7 +159,8 @@ def opcode_08(memory: list, ip: int, modes: str):
     else:
         memory[ip + 3] = int(param1 == param2)
 
-    return ip+4
+    return ip + 4
+
 
 # Table of opcode functions
 opcode_functions = [
