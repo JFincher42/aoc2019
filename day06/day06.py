@@ -26,7 +26,7 @@ if __name__ == "__main__":
 
             line = f.readline()
 
-    # Find the root node, and start counting
+    # Part 1: Find the root node, and start counting
     level = 2
     count = len(orbits["COM"])
 
@@ -34,4 +34,3 @@ if __name__ == "__main__":
         count += count_bodies(orbits[body], orbits, level)
 
     print(f"# of Orbits = {count}")
-    print(f"Orbits['COM'] = {orbits['COM']}")
