@@ -24,6 +24,7 @@ def find_route(orbits, start, end):
 
     return route
 
+
 if __name__ == "__main__":
 
     # Open the file, process into dict
@@ -54,42 +55,36 @@ if __name__ == "__main__":
 
     # Part 2: First, figure out where each of us is
 
-    for k,v in orbits.items():
+    for k, v in orbits.items():
         if "YOU" in v:
-            my_loc = k
+            # Find a path from here to the center, and add here as well
+            my_path = find_route(orbits, "COM", k)
+            my_path.append(k)
         if "SAN" in v:
-            san_loc = k
+            # Find a path from here to the center, and add here as well
+            san_path = find_route(orbits, "COM", k)
+            san_path.append(k)
 
-    # Find my path to COM
-    my_path = find_route(orbits, 'COM', my_loc)
-    san_path = find_route(orbits, 'COM', san_loc)
-    my_path.append(my_loc)
-    san_path.append(san_loc)
-
-    # Find the first common point
-    # Reverse them to make it easier
+    # Reverse the lists to make finding the first common point easier
     my_path.reverse()
     san_path.reverse()
 
     my_path_count = 0
     # First, find the point in my location list
     for body in my_path:
+        # If it's in the path to Santa, then this is our common ancestor
         if body in san_path:
             common = body
             break
         else:
             my_path_count += 1
 
-
-    # Now count the items between them
+    # Now count the items between COM and this item in san_path
     san_path_count = 0
     for body in san_path:
         if body == common:
             break
         else:
-            san_path_count+=1
+            san_path_count += 1
 
-
-    print(f"   My Location and Path:{my_loc} and {my_path}")
-    print(f"Santa Location and Path:{san_loc} and {san_path}")
     print(f"Orbital transfers required = {my_path_count + san_path_count}")
