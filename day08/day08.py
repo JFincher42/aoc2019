@@ -24,3 +24,20 @@ if __name__ == "__main__":
             lowest = layer
 
     print(f"Part 1: Lowest = {lowest['1'] * lowest['2']}")
+
+    final = [" "] * blocksize
+    max_layer = len(input_string) // blocksize
+
+    for index in range(blocksize):
+        current_layer = 0
+        while (
+            current_layer < max_layer
+            and input_string[current_layer * blocksize + index] == "2"
+        ):
+            current_layer += 1
+        if input_string[current_layer * blocksize + index] == '1':
+            final[index] = "*"
+
+    print("Part 2: ")
+    for width in range(0, blocksize, w):
+        print(f"  {''.join(final[width:width+w])}")
