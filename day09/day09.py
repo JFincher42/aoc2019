@@ -10,7 +10,11 @@ if __name__ == "__main__":
 
     # Create new IntCode instance
     intcode = IntCode(memory, 0)
-    intcode.write_input("1")
+    # Part 1
+    # intcode.write_input("1")
+    # Part 2
+    intcode.write_input("2")
+
     while not intcode.is_halted():
         intcode.run()
         print(f"{intcode.read_output()}")
