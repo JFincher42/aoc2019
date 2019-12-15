@@ -37,6 +37,24 @@ class IntCode:
         # High order memory
         self._expanded_memory = defaultdict(int)
 
+    def reset(self, ip:int = 0) :
+        # Reset the IP
+        self._ip = ip
+
+        # Internal state
+        self._paused = False
+        self._halted = False
+        self._base = 0
+
+        # Clear the input and output queues
+        self._input.clear()
+        self._output.clear()
+        self._last_output = ""
+        
+        # Clear high order memory
+        self._expanded_memory.clear()
+
+
     def is_halted(self):
         return self._halted
 
