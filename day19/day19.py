@@ -11,13 +11,12 @@ def get_tractor_pull(x, y):
     return int(drone.read_output())
 
 
-def find_tractor_width(y):
-    global memory
+def find_tractor_width(x, y):
 
     x_start, x_end = 0, 0
     x = 0
-    found_start = False
-    while x_end - x_start <= 0:
+    found_start, found_end = False, False
+    while not found_end:
         tractor_pull = get_tractor_pull(x, y)
 
         # If we haven't yet found the start
@@ -30,7 +29,8 @@ def find_tractor_width(y):
         # After we've found the start, stop when it ends
         else:
             if not tractor_pull:
-                x_end = x
+                found_end = True
+                x_end = x - 1
 
         x += 1
 
@@ -48,37 +48,48 @@ if __name__ == "__main__":
 
     points = 0
 
-    for y in range(50):
-        for x in range(50):
-            found_start = False
-            tractor_pull = get_tractor_pull(x, y)
+    # for y in range(50):
+    #     found_start = False
+    #     for x in range(50):
+    #         tractor_pull = get_tractor_pull(x, y)
 
-            # If we haven't yet found the start
-            if not found_start:
-                # Keep going until we do
-                if tractor_pull:
-                    found_start = True
-                    points += 1
+    #         # If we haven't yet found the start
+    #         if not found_start:
+    #             # Keep going until we do
+    #             if tractor_pull:
+    #                 found_start = True
+    #                 points += 1
 
-            # After we've found the start, stop when it ends
-            else:
-                if tractor_pull:
-                    points += 1
-                else:
-                    break
+    #         # After we've found the start, stop when it ends
+    #         else:
+    #             if tractor_pull:
+    #                 points += 1
+    #             else:
+    #                 break
 
     print(f"Points: {points}")
 
     width = 100
-    y = 0
-    x_start, x_end = find_tractor_width(y)
-    print(f"Row {y}, width = {x_end - x_start + 1}")
+    y = 2
+    x_start, x_end = find_tractor_width(0, y)
+    print(f"Row {y}, width = {x_end - x_start}")
     while x_end - x_start + 1 < width:
         y += 1
-        x_start, x_end = find_tractor_width(y)
-        print(f"Row {y}, width = {x_end - x_start + 1}")
+        x_start, x_end = find_tractor_width(x_start, y)
+        # print(f"Row {y}, width = {x_end - x_start}")
 
     y_start = y
     print(
         f"Found first row at y={y_start}, tractor at {x_start} through {x_end}"
     )
+
+    bottom_left = get_tractor_pull(x_end - width + 1, y_start + width - 1)
+    bottom_right = get_tractor_pull(x_end, y_start + width - 1)
+
+    while not (bottom_left and bottom_right):
+        y_start += 1
+        x_start, x_end = find_tractor_width(x_start, y_start)
+        bottom_left = get_tractor_pull(x_end - width + 1, y_start + width - 1)
+        bottom_right = get_tractor_pull(x_end, y_start + width - 1)
+
+    print(f"Found ({x_end-width+1}, {y_start}), answer = {(x_end-width+1) * 10_000 + y_start}")
