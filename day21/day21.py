@@ -10,7 +10,10 @@ if __name__ == "__main__":
         for line in f.readlines():
             memory.extend([int(x) for x in line.split(",")])
 
-    spring_prog = "OR A J\nAND B J\nAND C J\nNOT J J\nAND D J\nRUN\n"
+    # Part 1
+    # spring_prog = "OR A J\nAND B J\nAND C J\nNOT J J\nAND D J\nWALK\n"
+    # Part 2
+    spring_prog = "NOT H J\nOR C J\nAND B J\nAND A J\nNOT J J\nAND D J\nRUN\n"
     output_chars = []
 
     springbot = IntCode(memory, 0)
