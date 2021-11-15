@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
     # Read input
     memory = []
-    with open("day13/input.txt") as f:
+    with open("input.txt") as f:
         for line in f.readlines():
             memory.extend([int(x) for x in line.split(",")])
 
