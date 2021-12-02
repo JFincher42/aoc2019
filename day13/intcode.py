@@ -62,10 +62,9 @@ class IntCode:
     def _get_memory(self, ip):
         if ip < self._mem_len:
             return self._memory[ip]
-        else:
-            if ip not in self._expanded_memory:
-                self._expanded_memory[ip] = 0
-            return self._expanded_memory[ip]
+        if ip not in self._expanded_memory:
+            self._expanded_memory[ip] = 0
+        return self._expanded_memory[ip]
 
     # Set memory, respect high IP addresses
     def _set_memory(self, ip, value):
@@ -331,7 +330,10 @@ class IntCode:
         self._input.append(item)
 
     def _read_input(self):
-        return self._input.popleft()
+        if len(self._input)>0:
+            return self._input.popleft()
+        else:
+            return int(input("Joystick: "))
 
     def _write_output(self, item: str):
         self._output.append(item)

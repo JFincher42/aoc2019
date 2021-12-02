@@ -26,7 +26,7 @@ if __name__ == "__main__":
             memory.extend([int(x) for x in line.split(",")])
 
     # Create new IntCode instance
-    intcode = IntCode(memory, 0)
+    # intcode = IntCode(memory, 0)
     # Part 1
 
     game_data = defaultdict(int)
@@ -50,6 +50,7 @@ if __name__ == "__main__":
 
     # # Part 2
     memory[0] = 2
+    intcode = IntCode(memory, 0)
     # intcode.reset()
     game_field = [[" " for _ in range(38)] for _ in range(38)]
     intcode.run()
@@ -67,6 +68,6 @@ if __name__ == "__main__":
             print(f"Score: {tile_id}")
         else:
             update_game_data(game_field, x_pos, y_pos, tile_id)
-            for y in range(38):
+            for y in range(22):
                 print(f"{''.join(game_field[y])}")
-            input()
+            # input()
